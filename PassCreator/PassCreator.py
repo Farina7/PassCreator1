@@ -1,5 +1,6 @@
 import pyodbc 
 import numpy as np
+import random as r
 from datetime import datetime
 import sys
 
@@ -7,6 +8,9 @@ import sys
 
 server = 'LAPTOP-2J9AEQ6E'
 database = 'PasswordCreatorDB'
+np.random.seed(3);
+words = ""
+nwords = 0
 
 try:
 
@@ -28,7 +32,8 @@ else:
         sys.exit(1)
     else:
         for n in range(4):
-            idn = str(np.random.randint(1, 60453))
+            nwords += 1
+            idn = str(r.randint(1, 60453))
             try:
                 cursor.execute("exec sp_choose_words " + idn ) #execute the stored procedure
             except:
@@ -39,12 +44,17 @@ else:
 
                 for row in cursor: #transform the cursor in a normal string and delete the characters not needed
                     word = str(row) 
-                    sc  ="(',) [\]^_`{|}~'()*+, -./:;<>"
+                    sc  ="('), "
+                    print (idn)
+                    print(word)
+
                     for s in sc:
                         word = word.replace(s, "").capitalize() 
-                        print (idn)
-                words = word + word + str(np.random.randint(1,9))
-    
 
-            print(words)
+            if(nwords == 4):
+                words = words + word + str(r.randint(1,9)) + "@"
+            else:
+                words = words + word 
+
+        print(words)
 
